@@ -1,28 +1,37 @@
 package com.project.Airbnb.service.impl;
 
+import com.project.Airbnb.dto.HotelDto;
+import com.project.Airbnb.dto.HotelSearchRequest;
+import com.project.Airbnb.entity.Hotel;
 import com.project.Airbnb.entity.Inventory;
 import com.project.Airbnb.entity.Room;
 import com.project.Airbnb.repository.InventoryRepository;
 import com.project.Airbnb.service.InventoryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class InventoryServiceImpl implements InventoryService {
     private final InventoryRepository inventoryRepository;
+    private final ModelMapper modelMapper;
+
     @Override
     public void initializeRoomForAYear(Room room) {
-        LocalDate today=LocalDate.now();
-        LocalDate endDate=today.plusYears(1);
-        for (;!today.isAfter(endDate);today=today.plusDays(1))
-        {
-            Inventory inventory=Inventory.builder().
+        LocalDate today = LocalDate.now();
+        LocalDate endDate = today.plusYears(1);
+        for (; !today.isAfter(endDate); today = today.plusDays(1)) {
+            Inventory inventory = Inventory.builder().
                     room(room).
                     hotel(room.getHotel()).
                     bookedCount(0).
@@ -39,6 +48,21 @@ public class InventoryServiceImpl implements InventoryService {
     @Override
     public void deleteFutureInventories(Room roomCategory) {
         LocalDate today = LocalDate.now();
-        inventoryRepository.deleteByDateAfterAndRoom(today, roomCategory);
+        inventoryRepository.deleteByRoom(roomCategory);
+    }
+
+    @Override
+    public Page<HotelDto> searchHotels(HotelSearchRequest hotelSearchRequest) {
+        Pageable pageable = PageRequest.of(hotelSearchRequest.getPage(), hotelSearchRequest.getSize());
+        log.info("{}",hotelSearchRequest.getRoomsCount());
+        long datecount = ChronoUnit.DAYS.between(hotelSearchRequest.getStartDate(),
+                hotelSearchRequest.getEndDate())+1;// 1 is vey important
+        Page<Hotel> hotelPage = inventoryRepository.findHotelsWithAvailableInventory(hotelSearchRequest.getCity(),
+                hotelSearchRequest.getStartDate(),
+                hotelSearchRequest.getEndDate(),
+                hotelSearchRequest.getRoomsCount(),
+                datecount, pageable);
+        return hotelPage.map(hotel -> modelMapper.map(hotel,HotelDto.class));
+
     }
 }

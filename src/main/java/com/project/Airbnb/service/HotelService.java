@@ -1,6 +1,7 @@
 package com.project.Airbnb.service;
 
 import com.project.Airbnb.dto.HotelDto;
+import com.project.Airbnb.dto.HotelInfoDto;
 import com.project.Airbnb.entity.Hotel;
 import org.springframework.http.ResponseEntity;
 
@@ -18,4 +19,6 @@ public interface HotelService {
     void activateHotel(Long id);
 
     List<HotelDto> getAllHotels();
+
+    HotelInfoDto getHotelInfoById(Long hotelId);
 }
