@@ -47,7 +47,7 @@ public class Inventory {
     private BigDecimal surgeFactor;
 
     @Column(nullable = false,precision = 10,scale = 2)
-    private BigDecimal price; //baseprice * surgeFactor
+    private BigDecimal price;
 
     @Column(nullable = false)
     private String city; //so that we can search inventory in the basis of city

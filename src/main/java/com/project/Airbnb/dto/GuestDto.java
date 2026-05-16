@@ -4,6 +4,7 @@ import com.project.Airbnb.entity.User;
 import com.project.Airbnb.entity.enums.Gender;
 import lombok.Data;
 
+
 @Data
 public class GuestDto {
     private Long id;

@@ -38,18 +38,25 @@ public class BookingServiceImpl implements BookingService {
         log.info("Initialising booking for hotel : {}, room: {}, date {}-{}", bookingRequest.getHotelId(),
                 bookingRequest.getRoomId(), bookingRequest.getCheckInDate(), bookingRequest.getCheckOutDate());
 
+
         Hotel hotel=hotelRepository.findById(bookingRequest.getHotelId())
                 .orElseThrow(()->
                         new ResourceNotFoundException("hotel not found with id "+bookingRequest.getHotelId()));
         Room room=roomRepository.findById(bookingRequest.getRoomId())
                 .orElseThrow(()->
                         new ResourceNotFoundException("room not found with id "+bookingRequest.getRoomId()));
+
+
         List<Inventory> inventoryList=inventoryRepository
                 .findAndLockAvailableInventory(room.getId()
                 ,bookingRequest.getCheckInDate(),bookingRequest.getCheckOutDate(), bookingRequest.getRoomsCount());
+
+
         long dateCount= ChronoUnit.DAYS.between(
                 bookingRequest.getCheckInDate(),bookingRequest.getCheckOutDate()
         )+1;
+
+
         if ((inventoryList.size()) != dateCount)
         {
             throw new IllegalStateException("Room is not available anymore");
