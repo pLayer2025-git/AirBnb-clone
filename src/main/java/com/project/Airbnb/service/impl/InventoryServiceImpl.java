@@ -32,17 +32,19 @@ public class InventoryServiceImpl implements InventoryService {
     @Override
     public void initializeRoomForAYear(Room room) {
         LocalDate today = LocalDate.now();
-        LocalDate endDate = today.plusYears(1);
+        LocalDate endDate = today.plusMonths(3);
         for (; !today.isAfter(endDate); today = today.plusDays(1)) {
             Inventory inventory = Inventory.builder().
                     room(room).
                     hotel(room.getHotel()).
                     bookedCount(0).
+                    reservedCount(0).
                     city(room.getHotel().getCity()).
                     surgeFactor(BigDecimal.ONE).
                     date(today).
                     price(room.getBasePrice()).
-                    totalCount(room.getTotalCount()).closed(false).
+                    totalCount(room.getTotalCount()).
+                    closed(false).
                     build();
             inventoryRepository.save(inventory);
         }

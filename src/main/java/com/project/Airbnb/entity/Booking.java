@@ -23,7 +23,7 @@ public class Booking {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "hotel_id", nullable = false)
     private Hotel hotel;
 
@@ -64,5 +64,8 @@ public class Booking {
 
     @UpdateTimestamp
     private LocalDateTime updatedAt;
+
+    @Column(unique = true)
+    private String paymentSessionId;
 }
 //there is no one to many mapping because i dont want to store all inventory data inside room table and query about inventoy

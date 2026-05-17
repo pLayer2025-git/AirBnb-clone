@@ -18,6 +18,7 @@ import java.util.List;
 @Table(
         name = "hotel"
 )
+//@ToString is very dangerous
 public class Hotel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -46,7 +47,7 @@ public class Hotel {
     @Column(nullable = false)
     private Boolean active;
 
-    @OneToMany(mappedBy = "hotel",fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "hotel",fetch = FetchType.EAGER)
     @JsonIgnore
     private List<Room> rooms;
 

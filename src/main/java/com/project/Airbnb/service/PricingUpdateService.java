@@ -36,8 +36,8 @@ public class PricingUpdateService {
     private final HotelMinPriceRepository hotelMinPriceRepository;
 
     private final PricingService pricingService;
-    @Scheduled(cron = "*/9 * * * * *")
-    //@Scheduled(cron = "0 0 * * * *")// every hour at 0 min and 0 sec update this. learn from cron expression cron hub .
+    //@Scheduled(cron = "*/9 * * * * *")
+    @Scheduled(cron = "0 0 * * * *")// every hour at 0 min and 0 sec update this. learn from cron expression cron hub .
     public void updatePrices() {
     int page=0;
     int batchSize=100;
