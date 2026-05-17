@@ -51,4 +51,5 @@ public class HotelBookingController {
         return ResponseEntity.ok(Map.of("status", bookingService.getBookingStatus(bookingId)));
     }
 
+
 }

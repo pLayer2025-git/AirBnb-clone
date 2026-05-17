@@ -1,6 +1,9 @@
 package com.project.Airbnb.controller;
 
+import com.project.Airbnb.dto.BookingDto;
 import com.project.Airbnb.dto.HotelDto;
+import com.project.Airbnb.dto.HotelReportDto;
+import com.project.Airbnb.service.BookingService;
 import com.project.Airbnb.service.HotelService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -8,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -16,7 +20,7 @@ import java.util.List;
 @RequestMapping(path = "admin/hotels")
 public class HotelController {
     private final HotelService hotelService;
-
+    private final BookingService bookingService;
     @GetMapping
     public ResponseEntity<List<HotelDto>> getAllHotels()
     {
@@ -51,4 +55,23 @@ public class HotelController {
       hotelService.activateHotel(hotelId);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/{hotelId}/bookings")
+   // @Operation(summary = "Get all bookings of a hotel", tags = {"Admin Bookings"})
+    public ResponseEntity<List<BookingDto>> getAllBookingsByHotelId(@PathVariable Long hotelId) {
+        return ResponseEntity.ok(bookingService.getAllBookingsByHotelId(hotelId));
+    }
+    @GetMapping("/{hotelId}/reports")
+  //  @Operation(summary = "Generate a bookings report of a hotel", tags = {"Admin Bookings"})
+    public ResponseEntity<HotelReportDto> getHotelReport(@PathVariable Long hotelId,
+                                                         @RequestParam(required = false) LocalDate startDate,
+                                                         @RequestParam(required = false) LocalDate endDate) {
+
+        if (startDate == null) startDate = LocalDate.now().minusMonths(1);
+        if (endDate == null) endDate = LocalDate.now();
+
+        return ResponseEntity.ok(bookingService.getHotelReport(hotelId, startDate, endDate));
+    }
+
+
 }
